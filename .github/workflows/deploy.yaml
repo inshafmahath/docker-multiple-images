@@ -15,5 +15,7 @@ jobs:
       - run: docker run -e CI=true react-multi-img npm test
 
       - name: Define post action
-      - run: echo "The post action" 
+        uses: ./
+        with:
+          run: echo "The post action" 
     
