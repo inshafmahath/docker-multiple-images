@@ -24,6 +24,26 @@ jobs:
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/multi-server
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/multi-worker
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: "me-south-1"
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp deploy.zip s3://elasticbeanstalk-me-south-1-442139459500/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name multi-docker \
+          --source-bundle S3Bucket="elasticbeanstalk-me-south-1-442139459500",S3Key="deploy.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: aws elasticbeanstalk update-environment --environment-name Multidocker-env --version-label "ver-${{ github.sha }}"
+
       
       
     

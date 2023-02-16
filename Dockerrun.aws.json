@@ -1,0 +1,36 @@
+{
+  "AWSEBDockerrunVersion": "2",
+  "containerDefintion": [
+    {
+      "name": "client",
+      "image": "inshaf/multi-client",
+      "hostname": "client",
+      "essential": false
+    },
+    {
+      "name": "api",
+      "image": "inshaf/multi-server",
+      "hostname": "api",
+      "essential": false
+    },
+    {
+      "name": "worker",
+      "image": "inshaf/multi-worker",
+      "hostname": "worker",
+      "essential": false
+    },
+    {
+      "name": "nginx",
+      "image": "inshaf/multi-client",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [
+        {
+          "ContainerPort": 80,
+          "HostPort": 80
+        }
+      ],
+      "links" : ["api", "client"]
+    }
+  ]
+}
