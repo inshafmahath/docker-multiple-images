@@ -24,6 +24,9 @@ jobs:
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/multi-server
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/multi-worker
 
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
